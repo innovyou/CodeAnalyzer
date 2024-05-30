@@ -3,12 +3,12 @@
         "language": "python3",
         "context": "given following python3 code",
         "question": "search for all possibile authorization vulnerabilities, and give me only a simplified output, one by one vulnerability on new line with 100 max characters and Vulnerability Score on base 10",
-        "path": "/storage/input/python3_auth.code"
+        "path": "/storage/input/python3_auth.code.example"
     },
     {
         "language": "java",
         "context": "given following java code",
         "question": "search for all possibile authorization vulnerabilities, and give me only a simplified output, one by one vulnerability on new line with 100 max characters and Vulnerability Score on base 10",
-        "path": "/storage/input/java_auth.code"
+        "path": "/storage/input/java_auth.code.example"
     }
 ]
