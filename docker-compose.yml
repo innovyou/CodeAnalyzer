@@ -14,6 +14,8 @@ services:
       OLLAMA_HOST: 0.0.0.0
     extra_hosts:
       - "host.docker.internal:host-gateway"
+    logging:
+      driver: "none"
     deploy:
       resources:
         reservations:
@@ -28,7 +30,7 @@ services:
       - 80:80
     volumes:
       - ./app:/app
-      - ./storage:/storage:z
+      - ./storage:/storage:rw
     hostname: app
     build:
       context: ./app

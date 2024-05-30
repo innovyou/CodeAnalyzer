@@ -1,0 +1,50 @@
+importimport jwt
+import datetime
+from typing import Dict, Optional
+
+class JWTAuth:
+    def __init__(self, secret_key: str, algorithm: str = 'HS256', expiration_minutes: int = 30):
+        self.secret_key = secret_key
+        self.algorithm = algorithm
+        self.expiration_minutes = expiration_minutes
+
+    def encode_token(self, payload: Dict[str, any]) -> str:
+        """Encodes a JWT token with the given payload and expiration time."""
+        payload_copy = payload.copy()
+        payload_copy['exp'] = datetime.datetime.utcnow() + datetime.timedelta(minutes=self.expiration_minutes)
+        token = jwt.encode(payload_copy, self.secret_key, algorithm=self.algorithm)
+        return token
+
+    def decode_token(self, token: str) -> Optional[Dict[str, any]]:
+        """Decodes a JWT token and returns the payload if the token is valid."""
+        try:
+            payload = jwt.decode(token, self.secret_key, algorithms=[self.algorithm])
+            return payload
+        except jwt.ExpiredSignatureError:
+            print("Token has expired")
+        except jwt.InvalidTokenError:
+            print("Invalid token")
+        return None
+
+    def is_token_valid(self, token: str) -> bool:
+        """Checks if a given JWT token is valid."""
+        payload = self.decode_token(token)
+        return payload is not None
+
+# Example usage:
+if __name__ == "__main__":
+    secret = 'your-secret-key'
+    auth = JWTAuth(secret_key=secret)
+
+    # Create a token
+    user_payload = {'user_id': 123, 'username': 'john_doe'}
+    token = auth.encode_token(user_payload)
+    print("Encoded Token:", token)
+
+    # Decode the token
+    decoded_payload = auth.decode_token(token)
+    print("Decoded Payload:", decoded_payload)
+
+    # Validate the token
+    is_valid = auth.is_token_valid(token)
+    print("Is Token Valid:", is_valid)

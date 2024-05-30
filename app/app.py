@@ -1,51 +1,100 @@
 import os
 import asyncio
-import time
-from ollama import AsyncClient
+import datetime
+import json
+from ollama import Client
 
-LLM = os.environ.get("LLM")
+LLMS = os.environ.get("LLMS").split(" ")
 OLLAMA_HOST = os.environ.get("OLLAMA_HOST")
 OLLAMA_PORT = int(os.environ.get("OLLAMA_PORT"))
-LC_CSV_DATA = None
+JSON_DATA_PATH = os.environ.get("JSON_DATA_PATH")
 
 
-async def do_chat():
-
+def do_chat(model, prompt):
     url = "http://%s:%s" % (
         OLLAMA_HOST,
         OLLAMA_PORT
     )
-    prompt_file = open("prompt.txt", "r")
-    prompt = prompt_file.read()
-    prompt_file.close()
-    print(
-        "PROMPT: \n%s" % (prompt)
-    )
-    print("#"*72)
     message = {
         "role": "user",
         "content": prompt
-    }
-    
-    print("RESPONSE: \n")
-    async for part in await AsyncClient(url).chat(
-        model=LLM,
+    }    
+    response = Client(url).chat(
+        model=model,
         messages=[message],
-        stream=True
-    ):
-        print(part['message']['content'], end='', flush=True)
+    )
+    return response['message']['content']
 
 
-def detect_file_changes(file_path, interval=1):
-    last_modified = os.path.getmtime(file_path)
-    while True:
-        current_modified = os.path.getmtime(file_path)
-        if current_modified != last_modified:
-            asyncio.run(do_chat())
-            last_modified = current_modified
-        time.sleep(interval)
+def read_code_file(path):
+    with open(path,"r") as f:
+        code = f.read()
+    return code
+
+
+def write_to_report(path, data):
+    with open(path, "a") as f:
+        f.write(data)
+    f.close()
 
 
 if __name__ == "__main__":
-    detect_file_changes("prompt.txt")
+
+    with open(JSON_DATA_PATH,"r") as f:
+        json_string = f.read()
     
+    json_data = json.loads(json_string)
+
+    report_path = "/storage/output/%s.txt" % (
+        datetime.datetime.now().isoformat()
+    )
+
+    for part in json_data:
+        for LLM in LLMS:
+            if len(LLM) > 0:
+                print(
+                    "processing %s code on model %s" % (
+                        part["language"],
+                        LLM
+                    )
+                )
+                write_to_report(
+                    report_path,
+                    "#"*72
+                )
+                write_to_report(
+                    report_path,
+                    "\nCode language: %s | Code file: %s | LLM: %s\n\n" % (
+                        part["language"],
+                        part["path"],
+                        LLM
+                    )
+                )
+
+                if os.path.isfile(part["path"]):
+                    prompt = """
+                        Given this context: %s\n
+                        %s\n\n
+                        here the complete code: \n\n%s\n\n 
+                    """ % (
+                        part["context"],
+                        part["question"],
+                        read_code_file(part["path"])
+                    )
+                    response = do_chat(
+                        LLM,
+                        prompt
+                    )
+                    write_to_report(
+                        report_path,
+                        "\n%s\n\n" % (
+                            response
+                        )
+                    )
+                else:
+                    write_to_report(
+                        report_path,
+                        "\nFile: %s not found on input folder!\n\n" % (
+                            part["path"]
+                        )
+                    )

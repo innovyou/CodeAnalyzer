@@ -1,0 +1,76 @@
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.JwtBuilder;
+import io.jsonwebtoken.JwtParser;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.SignatureException;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
+public class JWTAuth {
+    private final String secretKey;
+    private final SignatureAlgorithm algorithm;
+    private final long expirationMinutes;
+
+    public JWTAuth(String secretKey, long expirationMinutes) {
+        this.secretKey = secretKey;
+        this.algorithm = SignatureAlgorithm.HS256;
+        this.expirationMinutes = expirationMinutes;
+    }
+
+    public String encodeToken(Map<String, Object> payload) {
+        long nowMillis = System.currentTimeMillis();
+        Date now = new Date(nowMillis);
+        Date exp = new Date(nowMillis + expirationMinutes * 60 * 1000);
+
+        JwtBuilder builder = Jwts.builder()
+            .setClaims(payload)
+            .setIssuedAt(now)
+            .setExpiration(exp)
+            .signWith(algorithm, secretKey);
+
+        return builder.compact();
+    }
+
+    public Claims decodeToken(String token) {
+        try {
+            JwtParser parser = Jwts.parser().setSigningKey(secretKey);
+            return parser.parseClaimsJws(token).getBody();
+        } catch (ExpiredJwtException e) {
+            System.out.println("Token has expired");
+        } catch (SignatureException e) {
+            System.out.println("Invalid token signature");
+        } catch (Exception e) {
+            System.out.println("Invalid token");
+        }
+        return null;
+    }
+
+    public boolean isTokenValid(String token) {
+        Claims claims = decodeToken(token);
+        return claims != null;
+    }
+
+    public static void main(String[] args) {
+        String secret = "your-secret-key";
+        JWTAuth auth = new JWTAuth(secret, 30);
+
+        // Create a token
+        Map<String, Object> userPayload = new HashMap<>();
+        userPayload.put("user_id", 123);
+        userPayload.put("username", "john_doe");
+        String token = auth.encodeToken(userPayload);
+        System.out.println("Encoded Token: " + token);
+
+        // Decode the token
+        Claims decodedPayload = auth.decodeToken(token);
+        System.out.println("Decoded Payload: " + decodedPayload);
+
+        // Validate the token
+        boolean isValid = auth.isTokenValid(token);
+        System.out.println("Is Token Valid: " + isValid);
+    }
+}

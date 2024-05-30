@@ -5,6 +5,7 @@ from ollama import Client
 LLMS = os.environ.get("LLMS").split(" ") 
 OLLAMA_HOST = os.environ.get("OLLAMA_HOST")
 OLLAMA_PORT = int(os.environ.get("OLLAMA_PORT"))
+JSON_DATA_PATH = os.environ.get("JSON_DATA_PATH")
 
 
 def init_llm():
@@ -33,5 +34,4 @@ def init_llm():
 
 
 if __name__ == "__main__":
-
     init_llm()
