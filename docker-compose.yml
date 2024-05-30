@@ -1,0 +1,50 @@
+services:
+  llm:
+    container_name: llm01
+    image: ollama/ollama:0.1.39-rocm
+    ports:
+      - 11434:11434
+    volumes:
+      - ./ollama:/root/.ollama:z
+    hostname: llm
+    platform: linux/amd64
+    networks:
+      llama3_network:
+    environment:
+      OLLAMA_HOST: 0.0.0.0
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+  app:
+    container_name: app01
+    image: python:3.12.3-alpine
+    ports:
+      - 80:80
+    volumes:
+      - ./app:/app
+      - ./storage:/storage:z
+    hostname: app
+    build:
+      context: ./app
+      dockerfile: ../Dockerfile
+    platform: linux/amd64
+    working_dir: /app
+    depends_on:
+      - llm
+    networks:
+      llama3_network:
+    env_file:
+      - .env
+    command:
+      - /bin/bash
+      - -c
+      - |
+        ./start.sh
+networks:
+  llama3_network:
