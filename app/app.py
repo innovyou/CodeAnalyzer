@@ -1,5 +1,4 @@
 import os
-import asyncio
 import datetime
 import json
 from ollama import Client
@@ -69,10 +68,12 @@ if __name__ == "__main__":
                         LLM
                     )
                 )
+                
                 write_to_report(
                     report_path,
                     "#"*72
                 )
+                
                 write_to_report(
                     report_path,
                     "\nCode language: %s | Code file: %s | LLM: %s\n\n" % (

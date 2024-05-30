@@ -3,7 +3,6 @@
 - Simple project that uses open source llm for analyze code. this is only an experimental one ;)
 
 
-
 # Requirements
 
 - Docker and docker compose

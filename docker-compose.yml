@@ -9,7 +9,7 @@ services:
     hostname: llm
     platform: linux/amd64
     networks:
-      llama3_network:
+      my_network:
     environment:
       OLLAMA_HOST: 0.0.0.0
     extra_hosts:
@@ -40,7 +40,7 @@ services:
     depends_on:
       - llm
     networks:
-      llama3_network:
+      my_network:
     env_file:
       - .env
     command:
@@ -49,4 +49,4 @@ services:
       - |
         ./start.sh
 networks:
-  llama3_network:
+  my_network:
