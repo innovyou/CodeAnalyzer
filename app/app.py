@@ -45,13 +45,24 @@ if __name__ == "__main__":
     
     json_data = json.loads(json_string)
 
-    report_path = "/storage/output/%s.txt" % (
-        datetime.datetime.now().isoformat()
-    )
+    now = datetime.datetime.now().replace(microsecond=0)
+    
 
-    for part in json_data:
-        for LLM in LLMS:
-            if len(LLM) > 0:
+    for LLM in LLMS:
+        if len(LLM) > 0:
+            
+            os.system(
+                "mkdir -p /storage/output/%s" % (
+                    now.isoformat()
+                )
+            )
+            
+            report_path = "/storage/output/%s/%s.txt" % (
+                now.isoformat(),
+                LLM.replace(":", "-")
+            )
+            
+            for part in json_data:
                 print(
                     "processing %s code on model %s" % (
                         part["language"],
