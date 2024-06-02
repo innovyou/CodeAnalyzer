@@ -4,7 +4,7 @@ import json
 from ollama import Client
 
 LLMS = os.environ.get("LLMS").split(" ")
-LLM_REPORT = os.environ.get("LLM_REPORT")
+LLM_FINAL_REPORT = os.environ.get("LLM_FINAL_REPORT")
 OLLAMA_HOST = os.environ.get("OLLAMA_HOST")
 OLLAMA_PORT = int(os.environ.get("OLLAMA_PORT"))
 JSON_DATA_PATH = os.environ.get("JSON_DATA_PATH")
@@ -123,7 +123,7 @@ if __name__ == "__main__":
     
     final_report_path = "/storage/output/%s/final_%s.txt" % (
         now.isoformat(),
-        LLM_REPORT
+        LLM_FINAL_REPORT
     )
 
     for r in reports:
@@ -143,7 +143,7 @@ if __name__ == "__main__":
 
     final_prompt_path = "/storage/output/%s/final_prompt_%s.txt" % (
         now.isoformat(),
-        LLM_REPORT
+        LLM_FINAL_REPORT
     )
 
     write_to_report(
