@@ -131,35 +131,37 @@ if __name__ == "__main__":
         final_report_data += "%s\n" % (f)
 
 
-    prompt = """
-        Givin this context: A data composed output different security report of ai models separated by multiple hashtag string.
+    # on end summerize 
+    
+    prompt_sum = """
+        Givin this context: A data composed by different security report of ai models, each one separated by multiple hashtag string.
         All reports contains bullet list of vulnerabilities with optional score out of 10 and some label that identify what llm is used for creating itself.
-        Do this action: Write a new report that compares results of every single report and summerize every vulnerability found,
-        avoiding duplicates and givin it a score out of 10 in line, after tell me what report is more complete and accurate in your opinion.
+        Do this actions:
+        1 - Write a new report that compares results of every single report and summerize every vulnerability found and report all found vulnerabilities avoiding duplicates and givin it a score out of 10 in line.
+        2 - Don't write any example of code.
+        3 - Based on your knowledge, tell me which llm used in this reports is more accurate.
         \n\n%s
     """ % (
         final_report_data
     )
 
-    final_prompt_path = "/storage/output/%s/final_prompt_%s.txt" % (
+    final_prompt_sum_path = "/storage/output/%s/final_prompt_sum_%s.txt" % (
         now.isoformat(),
         LLM_FINAL_REPORT
     )
 
     write_to_report(
-        final_prompt_path,
-        prompt
+        final_prompt_sum_path,
+        prompt_sum
     )
 
-    response = do_chat(
+    response_sum = do_chat(
         LLM,
-        prompt
+        prompt_sum
     )
     write_to_report(
         final_report_path,
-        "\n%s\n\n" % (
-            response
+        "Sum: \n\n%s\n\n" % (
+            response_sum
         )
-    )
-
-        
+    )   
