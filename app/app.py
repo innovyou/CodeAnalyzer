@@ -137,9 +137,7 @@ if __name__ == "__main__":
         Givin this context: A data composed by different security report of ai models, each one separated by multiple hashtag string.
         All reports contains bullet list of vulnerabilities with optional score out of 10 and some label that identify what llm is used for creating itself.
         Do this actions:
-        1 - Write a new report that compares results of every single report and summerize every vulnerability found and report all found vulnerabilities avoiding duplicates and givin it a score out of 10 in line.
-        2 - Don't write any example of code.
-        3 - Based on your knowledge, tell me which llm used in this reports is more accurate.
+        Write a new report that compares all results of every single report and summerize every vulnerability found and write a new report with all found vulnerabilities avoiding duplicates and givin it a score out of 10 in line.
         \n\n%s
     """ % (
         final_report_data
