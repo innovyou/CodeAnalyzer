@@ -132,12 +132,12 @@ if __name__ == "__main__":
 
 
     prompt = """
-        Givin this context: A data composed by %s output different security report of ai models separated by multiple hashtag string.
-        write a report that compares results of every single report and summerize every vulnerability found,
-        avoiding duplicates and givin it a score out of ten in line. On the end write what report is more complete and accurate.
+        Givin this context: A data composed output different security report of ai models separated by multiple hashtag string.
+        All reports contains bullet list of vulnerabilities with optional score out of 10.
+        Write a report that compares results of every single report and summerize every vulnerability found,
+        avoiding duplicates and givin it a score out of 10 in line. Write what report is more complete and accurate.
         \n\n%s
     """ % (
-        llms_used,
         final_report_data
     )
 

@@ -8,18 +8,23 @@ import json
 DATA_FILE_PATH = "storage/data.json"
 
 
-def find_all_files_by_ext(path, ext=".py"):
+def find_all_files_by_ext(path, ext=".py", limit=0):
     res = []
+    count = 0
     for root, dirs, files in os.walk(path):
         for file in files:
+            if limit > 0 and len(res) >= limit:
+                break
             if file.endswith(ext):
                 res.append(os.path.join(root, file))
+                count += 1
     return res
 
 
 if __name__ == "__main__":
     path = None
     ext = None
+    limit = 0
     language = None
     context = None
     question = None
@@ -29,13 +34,15 @@ if __name__ == "__main__":
         elif i == 2:
             ext = a
         elif i == 3:
-            language = a
+            limit = int(a)
         elif i == 4:
-            context = a
+            language = a
         elif i == 5:
+            context = a
+        elif i == 6:
             question = a
 
-    all_files = find_all_files_by_ext(path, ext)
+    all_files = find_all_files_by_ext(path, ext, limit)
 
     os.unlink(DATA_FILE_PATH)
 

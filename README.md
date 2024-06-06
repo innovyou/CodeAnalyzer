@@ -29,5 +29,5 @@
 # Generate data.json by code folder recursively
 
 - generate recursively by a folder of code (to be put on storage/input). It finds all files by extension.
-- example of data.json auto generate recursively (args: folder, ext, language, context, question)
-- - python3 generate_data_json.py "storage/input/BankingPortal-API-main" ".java" "java" "this is a java code of banking api application" "acting as the maximum expert of cybersecurity, having worked for 20 years with banking technologies, search for every possible authentication and authorization vulnerabilities. give me a simplified bulleted list output, for every possible vulnerability assign a score on base 10. and max character of 200 per line"
+- example of data.json auto generate recursively (args: folder, ext, limit number of files, language, context, question)
+- - python3 generate_data_json.py "storage/input/BankingPortal-API-main" ".java" 0 "java" "this is a java code of banking api application" "acting as the maximum expert of cybersecurity, having worked for 20 years with banking technologies, search for every possible authentication and authorization vulnerabilities. give me a simplified bulleted list output, for every possible vulnerability assign a score on base 10. and max character of 200 per line"
