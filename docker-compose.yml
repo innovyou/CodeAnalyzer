@@ -26,8 +26,6 @@ services:
   app:
     container_name: app01
     image: python:3.12.3-alpine
-    ports:
-      - 80:80
     volumes:
       - ./app:/app
       - ./storage:/storage:rw
